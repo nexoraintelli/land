@@ -10,23 +10,23 @@
 
   <style>
     :root{
-      --bg:#08080f;
-      --surface:#0d1018;
-      --surface2:#121620;
-      --border:rgba(255,255,255,0.06);
-      --border2:rgba(255,255,255,0.1);
-      --blue:#1a4a8a;
-      --blue2:#2a6ab0;
-      --blue-light:#4a90d9;
+      --bg:#0b0b0c;
+      --surface:#111118;
+      --surface2:#18181f;
+      --border:rgba(255,255,255,0.08);
+      --border2:rgba(255,255,255,0.14);
+      --blue:#8b1e1e;
+      --blue2:#b32626;
+      --blue-light:#e84040;
       --red:#c0392b;
       --red2:#e84040;
       --green:#1a8a3a;
       --green2:#22a847;
-      --text:#e8edf2;
-      --gray:#8a9ab0;
-      --muted:#6a7a8a;
-      --muted2:#3a4a5a;
-      --shadow:0 12px 40px rgba(0,0,0,.22);
+      --text:#f0f0f5;
+      --gray:#b8b8c7;
+      --muted:#8888a0;
+      --muted2:#555568;
+      --shadow:0 16px 44px rgba(0,0,0,.30);
     }
 
     *{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
@@ -45,8 +45,10 @@
       position:fixed;
       inset:0;
       background:
-        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(26,74,138,0.15) 0%, transparent 60%),
-        radial-gradient(circle at 85% 10%, rgba(74,144,217,0.08) 0%, transparent 18%);
+        radial-gradient(circle at 15% 20%, rgba(128, 0, 0, 0.45) 0%, transparent 30%),
+        radial-gradient(circle at 75% 25%, rgba(111, 29, 29, 0.40) 0%, transparent 28%),
+        radial-gradient(circle at 60% 80%, rgba(214, 31, 31, 0.22) 0%, transparent 22%),
+        linear-gradient(135deg, #0b0b0c 0%, #121212 35%, #1a0000 100%);
       pointer-events:none;
       z-index:0;
     }
@@ -65,7 +67,7 @@
       inset:0;
       pointer-events:none;
       z-index:0;
-      opacity:.05;
+      opacity:.035;
       background:linear-gradient(to bottom, rgba(255,255,255,.04) 0, rgba(255,255,255,.04) 1px, transparent 1px, transparent 6px);
       mask-image:radial-gradient(circle at center, black 40%, transparent 95%);
     }
@@ -552,6 +554,96 @@
       z-index:1;
     }
 
+
+    .plans-grid{
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:16px;
+      margin-top:26px;
+    }
+
+    .plan-card{
+      background:linear-gradient(180deg, rgba(18,18,18,.92), rgba(17,17,24,1));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:26px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .plan-card.featured-plan{
+      border-color:rgba(232,64,64,.28);
+      box-shadow:0 18px 48px rgba(0,0,0,.24);
+    }
+
+    .plan-card::before{
+      content:'';
+      position:absolute;
+      inset:0 0 auto 0;
+      height:2px;
+      background:linear-gradient(90deg, var(--blue), var(--blue-light));
+    }
+
+    .plan-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-family:'Syne',sans-serif;
+      font-size:10px;
+      font-weight:700;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:var(--blue-light);
+      margin-bottom:14px;
+    }
+
+    .plan-title{
+      font-family:'Syne',sans-serif;
+      font-size:24px;
+      font-weight:800;
+      letter-spacing:-.03em;
+      margin-bottom:8px;
+    }
+
+    .plan-price{
+      font-family:'Syne',sans-serif;
+      font-size:42px;
+      font-weight:800;
+      line-height:1;
+      margin-bottom:12px;
+      color:var(--text);
+    }
+
+    .plan-desc{
+      font-size:14px;
+      color:var(--muted);
+      line-height:1.7;
+      margin-bottom:16px;
+    }
+
+    .plan-list{
+      list-style:none;
+      display:grid;
+      gap:10px;
+      margin:0 0 20px 0;
+    }
+
+    .plan-list li{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      color:var(--gray);
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .plan-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
     .comparison{
       margin-top:22px;
       overflow:auto;
@@ -762,7 +854,8 @@
       .hero-grid,
       .process-wrap,
       .featured-grid,
-      .faq-grid{
+      .faq-grid,
+      .plans-grid{
         grid-template-columns:1fr;
       }
 
@@ -1128,13 +1221,50 @@
           </div>
 
           <div class="featured-actions">
-            <a href="https://wa.me/5511971545949?text=Olá!%20Quero%20comprar%20o%20Plano%20Estratégico%20da%20Nexora%20e%20entender%20os%20próximos%20passos."_blank" rel="noopener noreferrer" class="btn-primary">Comprar agora</a>
+            <a href="https://wa.me/5511971545949?text=Olá!%20Quero%20comprar%20o%20Plano%20Estratégico%20da%20Nexora%20e%20entender%20os%20próximos%20passos." target="_blank" rel="noopener noreferrer" class="btn-primary">Comprar agora</a>
             <a href="https://wa.me/5511971545949?text=Olá!%20Quero%20saber%20mais%20sobre%20o%20Plano%20Estratégico%20da%20Nexora." target="_blank" rel="noopener noreferrer" class="btn-ghost">Tirar dúvidas no WhatsApp</a>
           </div>
 
           <p class="featured-note">
             Troque o link acima pelo seu checkout real: Stripe, Mercado Pago, Hotmart ou outro.
           </p>
+
+        </div>
+
+        <div class="plans-grid reveal">
+          <div class="plan-card">
+            <div class="plan-kicker">Plano básico</div>
+            <div class="plan-title">Diagnóstico Operacional</div>
+            <div class="plan-price">R$ 399</div>
+            <p class="plan-desc">
+              Para quem quer uma leitura inicial clara e objetiva, sem call estratégica.
+            </p>
+            <ul class="plan-list">
+              <li><span class="check">✓</span><span>Diagnóstico operacional</span></li>
+              <li><span class="check">✓</span><span>Relatório com causa raiz</span></li>
+            </ul>
+            <div class="plan-actions">
+              <a href="https://wa.me/5511971545949?text=Olá!%20Quero%20comprar%20o%20Plano%20Básico%20da%20Nexora." target="_blank" rel="noopener noreferrer" class="btn-ghost">Quero o plano básico</a>
+            </div>
+          </div>
+
+          <div class="plan-card featured-plan">
+            <div class="plan-kicker">Plano principal</div>
+            <div class="plan-title">Plano Estratégico</div>
+            <div class="plan-price">R$ 1.297</div>
+            <p class="plan-desc">
+              Para sellers que querem clareza profunda, priorização e explicação estratégica da leitura.
+            </p>
+            <ul class="plan-list">
+              <li><span class="check">✓</span><span>Diagnóstico sistêmico completo</span></li>
+              <li><span class="check">✓</span><span>Relatório com causa raiz</span></li>
+              <li><span class="check">✓</span><span>Plano de ação priorizado</span></li>
+              <li><span class="check">✓</span><span>Call estratégica inclusa</span></li>
+            </ul>
+            <div class="plan-actions">
+              <a href="https://wa.me/5511971545949?text=Olá!%20Quero%20comprar%20o%20Plano%20Estratégico%20da%20Nexora." target="_blank" rel="noopener noreferrer" class="btn-primary">Quero o plano estratégico</a>
+            </div>
+          </div>
         </div>
 
         <div class="comparison reveal">
