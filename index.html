@@ -1,719 +1,1543 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Nexora Intelligence — Diagnóstico sistêmico de performance para vendedores Amazon. Descubra o real problema da sua conta e o caminho para escalar.">
-<title>Nexora Intelligence</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
-<style>
-:root{
-  --bg:#0b0b0c;
-  --surface:#111118;
-  --surface2:#18181f;
-  --border:rgba(255,255,255,0.08);
-  --border2:rgba(255,255,255,0.14);
-  --accent:#8b1e1e;
-  --accent-2:#b32626;
-  --accent-soft:rgba(139,30,30,.18);
-  --accent-glow:rgba(214,31,31,.22);
-  --red:#8b1e1e;
-  --red2:#e84040;
-  --green:#22c98a;
-  --amber:#f5a623;
-  --teal:#2dd4bf;
-  --text:#f0f0f5;
-  --gray:#b8b8c8;
-  --gray2:#6d6d82;
-  --muted:#9a9aac;
-  --muted2:#5f5f72;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
-html{scroll-behavior:smooth}
-body{
-  background:#0b0b0c;
-  color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  font-size:16px;
-  line-height:1.6;
-  overflow-x:hidden;
-}
-body::before{
-  content:'';
-  position:fixed;
-  inset:0;
-  background:
-    radial-gradient(circle at 15% 20%, rgba(128,0,0,0.45) 0%, transparent 30%),
-    radial-gradient(circle at 75% 25%, rgba(111,29,29,0.40) 0%, transparent 28%),
-    radial-gradient(circle at 60% 80%, rgba(214,31,31,0.22) 0%, transparent 22%),
-    linear-gradient(135deg, #0b0b0c 0%, #121212 35%, #1a0000 100%);
-  pointer-events:none;
-  z-index:0;
-}
-body::after{
-  content:'';
-  position:fixed;
-  inset:0;
-  background:
-    repeating-linear-gradient(
-      90deg,
-      rgba(255,0,0,0.00) 0px,
-      rgba(255,0,0,0.00) 3px,
-      rgba(255,0,0,0.05) 4px,
-      rgba(255,0,0,0.00) 7px
-    );
-  opacity:.35;
-  pointer-events:none;
-  z-index:0;
-}
-.noise{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  opacity:.02;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-.wrap{max-width:1100px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
-.wrap-sm{max-width:740px;margin:0 auto;padding:0 24px;position:relative;z-index:1}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-/* NAV */
-nav{
-  padding:24px 0;
-  border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  background:rgba(11,11,12,0.92);
-  backdrop-filter:blur(12px);
-  z-index:100;
-}
-.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.nav-logo{
-  height:auto;
-  max-width:260px;
-  width:100%;
-  object-fit:contain;
-  display:block;
-}
-.nav-cta{
-  font-family:'Syne',sans-serif;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:.06em;
-  padding:9px 20px;
-  border-radius:8px;
-  background:var(--red);
-  color:#fff;
-  text-decoration:none;
-  border:none;
-  cursor:pointer;
-  transition:all .2s;
-}
-.nav-cta:hover{background:var(--red2)}
-.nav-lang{display:flex;gap:4px}
-.lang-btn{
-  font-size:12px;
-  font-weight:500;
-  padding:5px 10px;
-  border-radius:6px;
-  border:1px solid var(--border2);
-  background:transparent;
-  color:var(--muted);
-  cursor:pointer;
-  transition:all .15s;
-  font-family:'DM Sans',sans-serif;
-}
-.lang-btn.active{
-  background:var(--surface2);
-  color:var(--text);
-  border-color:var(--red);
-}
+  <title>Nexora Intelligence</title>
 
-/* HERO */
-.hero{padding:100px 0 80px;text-align:center}
-.hero-tag{
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  font-family:'Syne',sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.14em;
-  color:#ffb4b4;
-  text-transform:uppercase;
-  margin-bottom:28px;
-  padding:7px 16px;
-  border:1px solid rgba(232,64,64,.22);
-  border-radius:20px;
-  background:rgba(139,30,30,.08);
-}
-.hero-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--red2)}
-h1{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(38px,6vw,68px);
-  font-weight:800;
-  line-height:1.08;
-  letter-spacing:-.03em;
-  color:var(--text);
-  margin-bottom:24px;
-}
-h1 .accent{color:#ffb4b4}
-h1 .red{color:var(--red2)}
-.hero-sub{
-  font-size:clamp(16px,2vw,19px);
-  color:var(--gray);
-  max-width:580px;
-  margin:0 auto 44px;
-  line-height:1.75;
-  font-weight:300;
-}
-.hero-ctas{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
-.btn-primary{
-  font-family:'Syne',sans-serif;
-  font-size:14px;
-  font-weight:700;
-  padding:16px 36px;
-  border-radius:10px;
-  background:var(--red);
-  color:#fff;
-  border:none;
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  letter-spacing:.04em;
-  transition:all .2s;
-}
-.btn-primary:hover{background:var(--red2);transform:translateY(-1px)}
-.btn-ghost{
-  font-family:'Syne',sans-serif;
-  font-size:13px;
-  font-weight:600;
-  padding:15px 28px;
-  border-radius:10px;
-  background:transparent;
-  color:var(--gray);
-  border:1px solid var(--border2);
-  cursor:pointer;
-  text-decoration:none;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
-  letter-spacing:.03em;
-  transition:all .2s;
-}
-.btn-ghost:hover{color:var(--text);border-color:var(--red)}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
-/* TRUST BAR */
-.trust-bar{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:28px 0;margin-bottom:80px}
-.trust-inner{display:flex;align-items:center;justify-content:center;gap:48px;flex-wrap:wrap}
-.trust-item{text-align:center}
-.trust-num{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--text)}
-.trust-num span{color:var(--red2)}
-.trust-label{font-size:12px;color:var(--muted);margin-top:2px}
+  <style>
+    :root {
+      --bg: #07080d;
+      --bg-2: #0d0f16;
+      --card: rgba(16, 18, 28, 0.78);
+      --card-strong: rgba(20, 22, 32, 0.92);
+      --border: rgba(255, 255, 255, 0.10);
+      --border-red: rgba(179, 38, 38, 0.38);
+      --text: #f7f7fb;
+      --muted: #a5a9b8;
+      --muted-2: #73798b;
+      --red: #8b1e1e;
+      --red-2: #b32626;
+      --red-3: #d03a32;
+      --orange: #bc741e;
+      --orange-2: #d88b2d;
+      --green: #38d39f;
+      --max: 1220px;
+      --radius: 22px;
+      --shadow: 0 24px 70px rgba(0,0,0,.34);
+    }
 
-/* SECTION */
-.section{padding:80px 0}
-.section-tag{
-  font-family:'Syne',sans-serif;
-  font-size:10px;
-  font-weight:700;
-  letter-spacing:.16em;
-  color:#ffb4b4;
-  text-transform:uppercase;
-  margin-bottom:14px;
-  display:block;
-}
-h2{
-  font-family:'Syne',sans-serif;
-  font-size:clamp(28px,4vw,42px);
-  font-weight:800;
-  letter-spacing:-.02em;
-  line-height:1.15;
-  margin-bottom:16px;
-  color:var(--text);
-}
-.section-sub{font-size:17px;color:var(--gray);line-height:1.7;font-weight:300;max-width:560px}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-/* PROBLEM */
-.problem-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1px;
-  background:var(--border);
-  border-radius:16px;
-  overflow:hidden;
-  margin-top:48px;
-}
-.problem-item{background:rgba(18,18,18,0.88);padding:28px 32px}
-.problem-icon{font-size:22px;margin-bottom:14px}
-.problem-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px}
-.problem-desc{font-size:14px;color:var(--muted);line-height:1.65}
+    html {
+      scroll-behavior: smooth;
+    }
 
-/* CEREBROS */
-.cerebros-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:48px}
-.cerebro-card{
-  background:rgba(18,18,18,0.88);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:28px 24px;
-  position:relative;
-  overflow:hidden;
-  transition:border .2s,transform .2s;
-}
-.cerebro-card:hover{border-color:rgba(232,64,64,.4);transform:translateY(-2px)}
-.cerebro-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--red),var(--red2))}
-.cerebro-card.red-top::after{background:linear-gradient(90deg,var(--red),var(--red2))}
-.cerebro-card.teal-top::after{background:linear-gradient(90deg,#0f5a4a,#2dd4bf)}
-.cerebro-num{font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:.1em;color:#ffb4b4;text-transform:uppercase;margin-bottom:12px}
-.cerebro-card.red-top .cerebro-num{color:var(--red2)}
-.cerebro-card.teal-top .cerebro-num{color:#2dd4bf}
-.cerebro-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:10px}
-.cerebro-desc{font-size:13px;color:var(--muted);line-height:1.65}
-.cerebro-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:14px}
-.ctag{
-  font-size:10px;
-  padding:3px 8px;
-  border-radius:5px;
-  background:var(--surface2);
-  color:#d7d7e3;
-  border:1px solid var(--border);
-  font-weight:500;
+    body {
+      min-height: 100vh;
+      font-family: "DM Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 0% 18%, rgba(139, 30, 30, .38), transparent 26%),
+        radial-gradient(circle at 96% 12%, rgba(179, 38, 38, .18), transparent 26%),
+        radial-gradient(circle at 8% 82%, rgba(128, 0, 0, .30), transparent 28%),
+        linear-gradient(135deg, #07080d 0%, #0d0f16 44%, #14070a 100%);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(rgba(255,255,255,.017) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.017) 1px, transparent 1px);
+      background-size: 52px 52px;
+      mask-image: radial-gradient(circle at center, black 32%, transparent 80%);
+      opacity: .42;
+      z-index: 0;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 50%, rgba(179, 38, 38, .12), transparent 22%),
+        radial-gradient(circle at 92% 70%, rgba(188, 116, 30, .08), transparent 26%);
+      z-index: 0;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+    }
+
+    .container {
+      width: min(var(--max), calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    h1,
+    h2,
+    h3,
+    .brand-name {
+      font-family: "Syne", sans-serif;
+      letter-spacing: -0.045em;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      backdrop-filter: blur(18px);
+      background: rgba(7, 8, 13, .70);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    .header-inner {
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .scanner-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background:
+        radial-gradient(circle, #f4a641 0 9%, #b32626 10% 24%, transparent 25%),
+        radial-gradient(circle, transparent 0 38%, rgba(188,116,30,.60) 39% 40%, transparent 41% 57%, rgba(179,38,38,.45) 58% 59%, transparent 60%),
+        linear-gradient(135deg, rgba(255,255,255,.07), rgba(255,255,255,.01));
+      position: relative;
+      box-shadow: 0 0 22px rgba(179,38,38,.35);
+      flex: 0 0 auto;
+    }
+
+    .scanner-logo::before,
+    .scanner-logo::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      background: rgba(255,255,255,.22);
+      transform: translate(-50%, -50%);
+      border-radius: 999px;
+    }
+
+    .scanner-logo::before {
+      width: 1px;
+      height: 32px;
+    }
+
+    .scanner-logo::after {
+      width: 32px;
+      height: 1px;
+    }
+
+    .brand-name {
+      font-size: 19px;
+      font-weight: 800;
+      line-height: .95;
+      letter-spacing: .05em;
+    }
+
+    .brand-name span {
+      display: block;
+      margin-top: 5px;
+      font-family: "DM Sans", sans-serif;
+      font-size: 9px;
+      letter-spacing: .30em;
+      color: rgba(255,255,255,.62);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      color: rgba(255,255,255,.76);
+      font-size: 14px;
+    }
+
+    .nav a {
+      transition: .18s ease;
+    }
+
+    .nav a:hover {
+      color: #fff;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      transition: .18s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(135deg, #8b1e1e, #b32626 64%, #d03a32);
+      border: 1px solid rgba(255, 100, 100, .30);
+      box-shadow: 0 18px 38px rgba(139,30,30,.30);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 22px 46px rgba(139,30,30,.40);
+    }
+
+    .btn-secondary {
+      color: #fff;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,.055);
+      border-color: rgba(255,255,255,.20);
+    }
+
+    .hero {
+  position: relative;
+  padding: 34px 0 34px;
+  overflow: hidden;
 }
 
-/* COMO FUNCIONA */
-.steps{margin-top:48px;display:flex;flex-direction:column;gap:0}
-.step{display:flex;gap:28px;align-items:flex-start;padding:28px 0;border-bottom:1px solid var(--border)}
-.step:last-child{border:none}
-.step-num{
-  font-family:'Syne',sans-serif;
-  font-size:11px;
-  font-weight:800;
-  width:36px;
-  height:36px;
-  border-radius:10px;
-  background:var(--surface2);
-  border:1px solid var(--border2);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#ffb4b4;
-  flex-shrink:0;
-  letter-spacing:.04em;
+    .hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(360px, .70fr);
+  gap: 38px;
+  align-items: center;
+  min-height: 480px;
 }
-.step-content{flex:1}
-.step-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
-.step-desc{font-size:14px;color:var(--muted);line-height:1.65}
 
-/* PARA QUEM */
-.audience-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:40px}
-.audience-card{
-  background:rgba(18,18,18,0.88);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:22px 20px;
-  transition:border .2s;
-}
-.audience-card:hover{border-color:var(--border2)}
-.audience-icon{
-  width:36px;
-  height:36px;
-  border-radius:8px;
-  background:rgba(139,30,30,.18);
-  border:1px solid rgba(232,64,64,.2);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  margin-bottom:14px;
-}
-.audience-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px}
-.audience-desc{font-size:13px;color:var(--muted);line-height:1.6}
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+    }
 
-/* CTA SECTION */
-.cta-section{
-  background:rgba(18,18,18,0.88);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:60px 48px;
-  text-align:center;
-  margin:0 0 80px;
-}
-.cta-section h2{margin-bottom:12px}
-.cta-section .section-sub{margin:0 auto 36px}
-.cta-divider{display:flex;align-items:center;gap:16px;margin:24px 0;color:var(--muted2);font-size:13px}
-.cta-divider::before,.cta-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(188,116,30,.30);
+      background: rgba(188,116,30,.075);
+      color: #f0a33a;
+      font-family: "Syne", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 25px;
+    }
 
-/* FORM */
-.form-wrap{
-  background:#0f0f13;
-  border:1px solid var(--border2);
-  border-radius:14px;
-  padding:32px;
-  max-width:480px;
-  margin:0 auto;
-  text-align:left;
-}
-.form-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
-.form-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:7px;letter-spacing:.02em}
-.form-group input,.form-group select{
-  width:100%;
-  background:rgba(24,24,31,0.95);
-  border:1px solid rgba(255,255,255,0.14);
-  border-radius:8px;
-  color:#fff;
-  font-family:'DM Sans',sans-serif;
-  font-size:14px;
-  padding:11px 14px;
-  outline:none;
-  transition:border .2s, box-shadow .2s;
-}
-.form-group input:focus,.form-group select:focus{
-  border-color:var(--red);
-  box-shadow:0 0 0 3px rgba(232,64,64,.12);
-}
-.form-group select option{background:var(--surface2)}
-.btn-form{
-  width:100%;
-  background:var(--red);
-  border:none;
-  color:#fff;
-  font-family:'Syne',sans-serif;
-  font-size:13px;
-  font-weight:700;
-  padding:13px;
-  border-radius:8px;
-  cursor:pointer;
-  letter-spacing:.05em;
-  transition:background .2s;
-  margin-top:4px;
-}
-.btn-form:hover{background:var(--red2)}
-.form-privacy{font-size:11px;color:var(--muted2);text-align:center;margin-top:12px;line-height:1.5}
-.form-success{display:none;text-align:center;padding:20px 0}
-.form-success-icon{font-size:32px;margin-bottom:12px}
-.form-success-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
-.form-success-sub{font-size:13px;color:var(--muted)}
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #f0a33a;
+      box-shadow: 0 0 16px rgba(188,116,30,.62);
+    }
 
-/* WA BUTTON */
-.wa-btn{
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-  font-family:'Syne',sans-serif;
-  font-size:14px;
-  font-weight:700;
-  padding:16px 32px;
-  border-radius:10px;
-  background:#1a8a3a;
-  color:#fff;
-  text-decoration:none;
-  letter-spacing:.04em;
-  transition:background .2s;
+   .hero h1 {
+  font-size: clamp(35px, 4.0vw, 60px);
+  line-height: .85;
+  font-weight: 700;
+  max-width: 500px;
 }
-.wa-btn:hover{background:#22a847}
-.wa-btn svg{width:20px;height:20px;flex-shrink:0}
 
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:40px 0}
-.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.footer-logo{height:auto;max-width:170px;opacity:.85;display:block;object-fit:contain}
-.footer-links{display:flex;gap:24px}
-.footer-links a{font-size:13px;color:var(--muted2);text-decoration:none;transition:color .15s}
-.footer-links a:hover{color:var(--muted)}
-.footer-copy{font-size:12px;color:var(--muted2)}
+    .hero h1 .orange {
+      color: var(--orange-2);
+    }
 
-@media(max-width:768px){
-  .problem-grid,.cerebros-grid,.audience-grid{grid-template-columns:1fr}
-  .cta-section{padding:40px 24px}
-  .trust-inner{gap:28px}
-  .step{flex-direction:column;gap:12px}
-  .nav-lang{display:none}
-  h1{font-size:36px}
+    .hero-sub {
+  margin-top: 18px;
+  max-width: 560px;
+  color: rgba(240,240,248,.78);
+  font-size: 15.5px;
+  line-height: 1.7;
 }
-.hidden{display:none}
-</style>
+    .hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+
+    .hero-stats {
+      margin-top: 28px;
+      max-width: 720px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 18px;
+      background: rgba(255,255,255,.032);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .stat {
+      padding: 14px 14px;
+      border-right: 1px solid rgba(255,255,255,.09);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .stat:last-child {
+      border-right: 0;
+    }
+
+    .stat-icon {
+      color: var(--red-3);
+      font-size: 23px;
+      line-height: 1;
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Syne", sans-serif;
+      font-size: 22px;
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+      display: block;
+      line-height: 1.35;
+      margin-top: 4px;
+    }
+
+   .hero-scanner {
+  position: relative;
+  min-height: 430px;
+  display: grid;
+  place-items: center;
+}
+
+   .scanner-orbit {
+  width: min(420px, 100%);
+      aspect-ratio: 1;
+      border-radius: 999px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      background:
+        radial-gradient(circle at center, rgba(240,163,58,.15), transparent 7%),
+        radial-gradient(circle at center, rgba(179,38,38,.16), transparent 41%),
+        radial-gradient(circle at center, transparent 0 62%, rgba(179,38,38,.13) 63%, transparent 64%);
+      box-shadow:
+        0 0 110px rgba(179,38,38,.14),
+        inset 0 0 100px rgba(179,38,38,.04);
+    }
+
+    .scanner-orbit::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background:
+        repeating-radial-gradient(circle, transparent 0 54px, rgba(255,255,255,.11) 55px, transparent 56px),
+        conic-gradient(from 280deg, transparent 0 300deg, rgba(179,38,38,.58) 324deg, rgba(240,163,58,.22) 342deg, transparent 360deg);
+      mask-image: radial-gradient(circle, transparent 0 12%, black 13% 100%);
+      opacity: .85;
+    }
+
+    .scanner-orbit::after {
+      content: "";
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: linear-gradient(transparent, rgba(255,255,255,.32), transparent);
+      box-shadow:
+        96px 0 0 rgba(255,255,255,.09),
+        -96px 0 0 rgba(255,255,255,.09);
+    }
+
+    .scanner-horizontal {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.32), transparent);
+      box-shadow:
+        0 96px 0 rgba(255,255,255,.09),
+        0 -96px 0 rgba(255,255,255,.09);
+    }
+
+    .scanner-sweep {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: conic-gradient(from 36deg, transparent 0deg, rgba(179,38,38,.08) 28deg, rgba(255,72,60,.70) 35deg, transparent 42deg);
+      filter: drop-shadow(0 0 18px rgba(255,72,60,.42));
+      animation: scan 7s linear infinite;
+    }
+
+    @keyframes scan {
+      to { transform: rotate(360deg); }
+    }
+
+    .scanner-core {
+      position: relative;
+      z-index: 4;
+      width: 58px;
+      height: 58px;
+      border-radius: 999px;
+      background:
+        radial-gradient(circle, #fff2c0 0 8%, #f0a33a 9% 26%, #b32626 27% 62%, #36080c 63%);
+      box-shadow:
+        0 0 28px rgba(240,163,58,.62),
+        0 0 90px rgba(179,38,38,.40);
+      border: 1px solid rgba(255,255,255,.20);
+    }
+
+    .scanner-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #ff6d5f;
+      box-shadow: 0 0 18px rgba(255,72,60,.80);
+      z-index: 5;
+    }
+
+    .dot-1 { top: 18%; left: 50%; }
+    .dot-2 { right: 14%; top: 49%; }
+    .dot-3 { bottom: 18%; left: 50%; }
+    .dot-4 { left: 14%; top: 49%; }
+
+    .scanner-status {
+      position: absolute;
+      bottom: 34px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: 330px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(12,14,22,.78);
+      backdrop-filter: blur(16px);
+      border-radius: 15px;
+      padding: 15px 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.24);
+    }
+
+    .scanner-status strong {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .scanner-status strong::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(56,211,159,.70);
+    }
+
+    .scanner-status span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .section {
+      padding: 64px 0;
+    }
+
+    .section-header {
+      display: grid;
+      grid-template-columns: minmax(0, .95fr) minmax(260px, .75fr);
+      gap: 42px;
+      align-items: end;
+      margin-bottom: 26px;
+    }
+
+    .section-kicker {
+      color: var(--red-3);
+      font-family: "Syne", sans-serif;
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: 11px;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .section h2 {
+      font-size: clamp(34px, 4.2vw, 58px);
+      line-height: 1;
+      font-weight: 800;
+      max-width: 720px;
+    }
+
+    .section h2 .red {
+      color: #ff4f46;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      line-height: 1.78;
+      font-size: 16px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(179,38,38,.10), transparent 30%),
+        linear-gradient(135deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .card-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      border: 1px solid rgba(179,38,38,.30);
+      background: rgba(139,30,30,.14);
+      display: grid;
+      place-items: center;
+      color: #ff4f46;
+      font-size: 21px;
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      font-size: 18px;
+      line-height: 1.25;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.72;
+    }
+
+    .how-section {
+      padding-top: 72px;
+    }
+
+    .brain-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brain-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,72,60,.75), transparent);
+    }
+
+    .brain-number {
+      font-family: "Syne", sans-serif;
+      color: #ff4f46;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      margin-bottom: 18px;
+    }
+
+    .brain-symbol {
+      width: 54px;
+      height: 54px;
+      border-radius: 18px;
+      border: 1px solid rgba(179,38,38,.35);
+      background:
+        radial-gradient(circle, rgba(255,72,60,.20), transparent 50%),
+        rgba(139,30,30,.13);
+      display: grid;
+      place-items: center;
+      color: #ff4f46;
+      font-size: 25px;
+      margin-bottom: 20px;
+    }
+
+    .brain-card h3 {
+      font-size: 24px;
+    }
+
+    .brain-card.featured {
+      border-color: rgba(255,72,60,.55);
+      background:
+        radial-gradient(circle at 100% 0%, rgba(255,72,60,.22), transparent 34%),
+        linear-gradient(135deg, rgba(139,30,30,.30), rgba(255,255,255,.018));
+    }
+
+    .audience {
+      padding-top: 76px;
+    }
+
+    .cta {
+      padding: 68px 0 78px;
+    }
+
+    .cta-box {
+      border: 1px solid rgba(179,38,38,.38);
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 82% 50%, rgba(179,38,38,.18), transparent 28%),
+        linear-gradient(135deg, rgba(139,30,30,.20), rgba(16,18,28,.90));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-box::before {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: 50%;
+      width: 430px;
+      height: 430px;
+      transform: translateY(-50%);
+      border-radius: 999px;
+      border: 1px solid rgba(255,72,60,.22);
+      box-shadow:
+        0 0 0 52px rgba(179,38,38,.025),
+        0 0 0 104px rgba(179,38,38,.016);
+    }
+
+    .cta-inner {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 34px;
+      padding: 44px 56px;
+    }
+
+    .cta h2 {
+      font-size: clamp(34px, 4vw, 56px);
+      line-height: 1;
+      max-width: 700px;
+    }
+
+    .cta h2 .red {
+      color: #ff4f46;
+    }
+
+    .cta p {
+      color: var(--muted);
+      line-height: 1.75;
+      margin-top: 14px;
+      max-width: 610px;
+    }
+
+    .footer {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding: 28px 0 42px;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: rgba(255,255,255,.48);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .hero-grid,
+      .section-header,
+      .cta-inner {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-grid {
+        min-height: auto;
+      }
+
+      .hero-scanner {
+        min-height: 470px;
+      }
+
+      .grid-4 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .cta-inner {
+        padding: 36px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .container {
+        width: min(100% - 28px, var(--max));
+      }
+
+      .header-inner {
+        min-height: auto;
+        padding: 16px 0;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        display: none;
+      }
+
+      .hero {
+        padding: 42px 0 34px;
+      }
+
+      .hero h1 {
+  font-size: 42px;
+}
+
+      .hero-sub {
+        font-size: 16px;
+      }
+
+      .hero-stats,
+      .grid-4 {
+        grid-template-columns: 1fr;
+      }
+
+      .stat {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255,255,255,.09);
+      }
+
+      .stat:last-child {
+        border-bottom: 0;
+      }
+
+      .scanner-orbit {
+        width: min(360px, 100%);
+      }
+
+      .hero-scanner {
+        min-height: 380px;
+      }
+
+      .scanner-status {
+        min-width: 0;
+        width: calc(100% - 20px);
+      }
+
+      .section {
+        padding: 46px 0;
+      }
+
+      .card {
+        padding: 20px;
+      }
+
+      .cta-inner {
+        padding: 28px 22px;
+      }
+
+      .footer-inner {
+        flex-direction: column;
+      }
+    }
+    .brand-image {
+  display: block;
+  width: 170px;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+    .footer-logo {
+  width: 140px;
+}
+
+.footer-brand {
+  display: inline-flex;
+  align-items: center;
+}
+    /* AJUSTE FINAL DE ESCALA DA LANDING */
+.hero {
+  padding: 28px 0 26px !important;
+}
+
+.hero-grid {
+  grid-template-columns: minmax(0, 0.92fr) minmax(340px, 0.68fr) !important;
+  gap: 34px !important;
+  min-height: 440px !important;
+  align-items: center !important;
+}
+
+.hero h1 {
+  font-size: clamp(34px, 3.55vw, 54px) !important;
+  line-height: 1.02 !important;
+  max-width: 520px !important;
+  letter-spacing: -0.035em !important;
+}
+
+.hero-sub {
+  margin-top: 16px !important;
+  max-width: 520px !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+}
+
+.eyebrow {
+  font-size: 10px !important;
+  padding: 7px 11px !important;
+  margin-bottom: 18px !important;
+}
+
+.hero-actions {
+  margin-top: 22px !important;
+  gap: 10px !important;
+}
+
+.btn {
+  padding: 11px 15px !important;
+  font-size: 13px !important;
+  border-radius: 12px !important;
+}
+
+.header-inner {
+  min-height: 68px !important;
+}
+
+.brand-image {
+  width: 150px !important;
+  height: auto !important;
+}
+
+.header .btn-primary {
+  padding: 12px 18px !important;
+  font-size: 13px !important;
+  border-radius: 14px !important;
+}
+
+.nav {
+  gap: 24px !important;
+  font-size: 13.5px !important;
+}
+
+.hero-scanner {
+  min-height: 360px !important;
+}
+
+.scanner-orbit {
+  width: min(330px, 100%) !important;
+}
+
+.scanner-status {
+  bottom: 8px !important;
+  min-width: 260px !important;
+  padding: 12px 14px !important;
+  border-radius: 13px !important;
+}
+
+.scanner-status strong {
+  font-size: 13px !important;
+}
+
+.scanner-status span {
+  font-size: 11px !important;
+}
+
+.hero-stats {
+  margin-top: 24px !important;
+  max-width: 560px !important;
+}
+
+.stat {
+  padding: 12px 12px !important;
+  gap: 9px !important;
+}
+
+.stat-icon {
+  font-size: 18px !important;
+}
+
+.stat strong {
+  font-size: 20px !important;
+}
+
+.stat span {
+  font-size: 11px !important;
+}
+
+/* Ajuste para telas menores */
+@media (max-width: 1100px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    min-height: auto !important;
+  }
+
+  .hero-scanner {
+    min-height: 320px !important;
+  }
+
+  .scanner-orbit {
+    width: min(300px, 100%) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: 38px !important;
+  }
+
+  .brand-image {
+    width: 135px !important;
+  }
+
+  .hero {
+    padding: 26px 0 24px !important;
+  }
+}
+    /* ================================
+   AJUSTE FINAL DE ESCALA GLOBAL
+   Mantém o hero h1 atual e reduz o restante
+================================ */
+
+/* Header */
+.header-inner {
+  min-height: 66px !important;
+}
+
+.brand-image {
+  width: 145px !important;
+  height: auto !important;
+}
+
+.nav {
+  gap: 22px !important;
+  font-size: 13px !important;
+}
+
+.header .btn-primary {
+  padding: 11px 17px !important;
+  font-size: 13px !important;
+  border-radius: 13px !important;
+}
+
+/* Hero */
+.hero {
+  padding: 32px 0 32px !important;
+}
+
+.hero-grid {
+  grid-template-columns: minmax(0, .95fr) minmax(340px, .68fr) !important;
+  gap: 34px !important;
+  min-height: 445px !important;
+  align-items: center !important;
+}
+
+.eyebrow {
+  font-size: 9.5px !important;
+  padding: 7px 11px !important;
+  margin-bottom: 18px !important;
+  letter-spacing: .13em !important;
+}
+
+.hero-sub {
+  margin-top: 16px !important;
+  max-width: 520px !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+}
+
+.hero-actions {
+  margin-top: 22px !important;
+  gap: 10px !important;
+}
+
+.btn {
+  padding: 10px 14px !important;
+  font-size: 12.5px !important;
+  border-radius: 12px !important;
+}
+
+/* Scanner */
+.hero-scanner {
+  min-height: 345px !important;
+}
+
+.scanner-orbit {
+  width: min(315px, 100%) !important;
+}
+
+.scanner-status {
+  bottom: 4px !important;
+  min-width: 250px !important;
+  padding: 11px 13px !important;
+  border-radius: 13px !important;
+}
+
+.scanner-status strong {
+  font-size: 12.5px !important;
+}
+
+.scanner-status span {
+  font-size: 10.5px !important;
+}
+
+/* Métricas do hero */
+.hero-stats {
+  margin-top: 24px !important;
+  max-width: 560px !important;
+}
+
+.stat {
+  padding: 11px 12px !important;
+  gap: 8px !important;
+}
+
+.stat-icon {
+  font-size: 17px !important;
+}
+
+.stat strong {
+  font-size: 20px !important;
+}
+
+.stat span {
+  font-size: 10.5px !important;
+  line-height: 1.3 !important;
+}
+
+/* Seções gerais */
+.section {
+  padding: 44px 0 !important;
+}
+
+.section-header {
+  gap: 28px !important;
+  margin-bottom: 20px !important;
+}
+
+.section-kicker {
+  font-size: 9.5px !important;
+  margin-bottom: 10px !important;
+  letter-spacing: .16em !important;
+}
+
+.section h2 {
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1.04 !important;
+  max-width: 620px !important;
+}
+
+.section-desc {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+/* Cards */
+.grid-4,
+.grid-3 {
+  gap: 13px !important;
+}
+
+.card {
+  border-radius: 18px !important;
+  padding: 18px !important;
+}
+
+.card-icon {
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 12px !important;
+  font-size: 17px !important;
+  margin-bottom: 14px !important;
+}
+
+.card h3 {
+  font-size: 15.5px !important;
+  line-height: 1.25 !important;
+  margin-bottom: 8px !important;
+}
+
+.card p {
+  font-size: 12.5px !important;
+  line-height: 1.62 !important;
+}
+
+/* Cards dos cérebros */
+.how-section {
+  padding-top: 48px !important;
+}
+
+.brain-card {
+  min-height: 215px !important;
+}
+
+.brain-number {
+  font-size: 10.5px !important;
+  margin-bottom: 12px !important;
+}
+
+.brain-symbol {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 14px !important;
+  font-size: 20px !important;
+  margin-bottom: 14px !important;
+}
+
+.brain-card h3 {
+  font-size: 18px !important;
+  line-height: 1.15 !important;
+}
+
+/* Para quem é */
+.audience {
+  padding-top: 48px !important;
+}
+
+/* CTA final */
+.cta {
+  padding: 48px 0 54px !important;
+}
+
+.cta-inner {
+  padding: 32px 38px !important;
+  gap: 24px !important;
+}
+
+.cta h2 {
+  font-size: clamp(28px, 3vw, 42px) !important;
+  line-height: 1.04 !important;
+}
+
+.cta p {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  margin-top: 10px !important;
+}
+
+.cta-box {
+  border-radius: 22px !important;
+}
+
+/* Footer */
+.footer {
+  padding: 22px 0 30px !important;
+}
+
+.footer-inner {
+  font-size: 12px !important;
+  align-items: center !important;
+}
+
+.footer-logo {
+  width: 125px !important;
+}
+
+/* Responsivo */
+@media (max-width: 1100px) {
+  .hero-grid,
+  .section-header,
+  .cta-inner {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-scanner {
+    min-height: 300px !important;
+  }
+
+  .scanner-orbit {
+    width: min(280px, 100%) !important;
+  }
+
+  .section h2,
+  .cta h2 {
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .hero h1 {
+    font-size: 38px !important;
+  }
+
+  .hero {
+    padding: 28px 0 28px !important;
+  }
+
+  .hero-grid {
+    gap: 24px !important;
+  }
+
+  .brand-image {
+    width: 130px !important;
+  }
+
+  .section {
+    padding: 36px 0 !important;
+  }
+
+  .section h2,
+  .cta h2 {
+    font-size: 30px !important;
+  }
+
+  .card {
+    padding: 16px !important;
+  }
+}
+    /* AUMENTO SOMENTE DO SCANNER */
+.hero-scanner {
+  min-height: 430px !important;
+}
+
+.scanner-orbit {
+  width: min(420px, 100%) !important;
+}
+
+.scanner-status {
+  bottom: 6px !important;
+}
+  </style>
 </head>
+
 <body>
-<div class="noise"></div>
+  <div class="page">
 
-<nav>
-  <div class="wrap">
-    <div class="nav-inner">
-      <img src="logo-horizontal.png" alt="Nexora Intelligence" class="nav-logo">
-      <div style="display:flex;align-items:center;gap:12px">
-        <div class="nav-lang">
-          <button class="lang-btn active" onclick="setLang('pt')" id="btn-pt">PT</button>
-          <button class="lang-btn" onclick="setLang('en')" id="btn-en">EN</button>
-        </div>
-<a href="https://app.nexoraintelligence.com.br/pages/login.html" class="nav-cta" data-pt="Entrar na plataforma" data-en="Access platform">Entrar na plataforma</a>
-    </div>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="wrap-sm">
-    <div class="hero-tag">
-      <span class="hero-tag-dot"></span>
-      <span data-pt="Diagnóstico sistêmico Amazon" data-en="Amazon Systemic Diagnostics">Diagnóstico sistêmico Amazon</span>
-    </div>
-    <h1>
-      <span data-pt="Seu produto trava.<br>A Nexora encontra<br>o <span class='red'>porquê.</span>" data-en="Your product stalls.<br>Nexora finds<br>the <span class='red'>reason.</span>">
-        Seu produto trava.<br>A Nexora encontra<br>o <span class="red">porquê.</span>
-      </span>
-    </h1>
-    <p class="hero-sub" data-pt="Não analisamos só métricas. Analisamos o ecossistema completo — mercado, página, operação e economia — para identificar a causa raiz real da sua performance." data-en="We don't just analyze metrics. We analyze the complete ecosystem — market, listing, operations and economics — to identify the real root cause of your performance.">
-      Não analisamos só métricas. Analisamos o ecossistema completo — mercado, página, operação e economia — para identificar a causa raiz real da sua performance.
-    </p>
-   <div class="hero-ctas">
-  <a href="https://app.nexoraintelligence.com.br/pages/login.html" class="btn-primary">
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
-  <span data-pt="Entrar na plataforma" data-en="Access platform">Entrar na plataforma</span>
+    <header class="header">
+      <div class="container header-inner">
+      <a href="./index.html" class="brand">
+  <img src="../logo-horizontal.png%20(2).png" alt="Nexora Intelligence" class="brand-image">
 </a>
 
-  <a href="https://wa.me/5511971545949?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Nexora%20Intelligence." target="_blank" class="btn-ghost">
-    <span data-pt="Falar no WhatsApp" data-en="Chat on WhatsApp">Falar no WhatsApp</span>
-  </a>
-</div>
-</section>
+        <nav class="nav">
+          <a href="#como-funciona">Como funciona</a>
+          <a href="#para-quem">Para quem é</a>
+          <a href="#problema">Recursos</a>
+          <a href="#problema">Sobre</a>
+        </nav>
 
-<div class="wrap">
-  <div class="trust-bar">
-    <div class="trust-inner">
-      <div class="trust-item">
-        <div class="trust-num">273<span>+</span></div>
-        <div class="trust-label" data-pt="Subcategorias mapeadas" data-en="Mapped subcategories">Subcategorias mapeadas</div>
+        <button class="btn btn-primary" onclick="location.href='./login.html'">
+          Entrar no sistema →
+        </button>
       </div>
-      <div class="trust-item">
-        <div class="trust-num">3</div>
-        <div class="trust-label" data-pt="Cérebros de análise" data-en="Analysis engines">Cérebros de análise</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-num">5</div>
-        <div class="trust-label" data-pt="Sistemas avaliados" data-en="Evaluated systems">Sistemas avaliados</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-num">1</div>
-        <div class="trust-label" data-pt="Diagnóstico completo" data-en="Complete diagnosis">Diagnóstico completo</div>
-      </div>
-    </div>
-  </div>
-</div>
+    </header>
 
-<section class="section">
-  <div class="wrap">
-    <div style="max-width:560px">
-      <span class="section-tag" data-pt="O problema" data-en="The problem">O problema</span>
-      <h2 data-pt="A maioria dos diagnósticos Amazon olham só o sintoma" data-en="Most Amazon diagnostics only look at symptoms">A maioria dos diagnósticos Amazon olham só o sintoma</h2>
-      <p class="section-sub" data-pt="CTR baixo, CVR fraco, ACOS alto. Você vê os números, mas não sabe por que estão assim — nem o que fazer primeiro." data-en="Low CTR, weak CVR, high ACOS. You see the numbers, but don't know why they are that way — or what to do first.">CTR baixo, CVR fraco, ACOS alto. Você vê os números, mas não sabe por que estão assim — nem o que fazer primeiro.</p>
-    </div>
-    <div class="problem-grid">
-      <div class="problem-item">
-        <div class="problem-icon">◈</div>
-        <div class="problem-title" data-pt="Otimizações às cegas" data-en="Blind optimizations">Otimizações às cegas</div>
-        <div class="problem-desc" data-pt="Você muda título, imagem, bid — mas sem entender o gargalo real. Gasta energia e dinheiro no lugar errado." data-en="You change titles, images, bids — without understanding the real bottleneck. You waste energy and money in the wrong place.">Você muda título, imagem, bid — mas sem entender o gargalo real. Gasta energia e dinheiro no lugar errado.</div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-icon">◈</div>
-        <div class="problem-title" data-pt="Mercado ignorado" data-en="Ignored market">Mercado ignorado</div>
-        <div class="problem-desc" data-pt="Nenhuma ferramenta te diz se o problema é do produto, da página ou do mercado em que você escolheu competir." data-en="No tool tells you whether the problem is with the product, the listing, or the market you chose to compete in.">Nenhuma ferramenta te diz se o problema é do produto, da página ou do mercado em que você escolheu competir.</div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-icon">◈</div>
-        <div class="problem-title" data-pt="Causa raiz escondida" data-en="Hidden root cause">Causa raiz escondida</div>
-        <div class="problem-desc" data-pt="O sintoma é conversão baixa. A causa pode ser posicionamento errado, barreira de reviews, preço fora da faixa ou página fraca." data-en="The symptom is low conversion. The cause may be wrong positioning, review barrier, out-of-range price, or a weak listing.">O sintoma é conversão baixa. A causa pode ser posicionamento errado, barreira de reviews, preço fora da faixa ou página fraca.</div>
-      </div>
-      <div class="problem-item">
-        <div class="problem-icon">◈</div>
-        <div class="problem-title" data-pt="Escala sem lucro" data-en="Scale without profit">Escala sem lucro</div>
-        <div class="problem-desc" data-pt="Produto vendendo bem mas margem negativa. Sem diagnóstico de unit economics, crescer faz você perder mais dinheiro." data-en="Product selling well but negative margin. Without unit economics diagnostics, growing makes you lose more money.">Produto vendendo bem mas margem negativa. Sem diagnóstico de unit economics, crescer faz você perder mais dinheiro.</div>
-      </div>
-    </div>
-  </div>
-</section>
+    <main>
+      <section class="hero">
+        <div class="container hero-grid">
 
-<section class="section" id="como-funciona">
-  <div class="wrap">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start">
-      <div>
-        <span class="section-tag" data-pt="Como funciona" data-en="How it works">Como funciona</span>
-        <h2 data-pt="3 cérebros. 1 diagnóstico completo." data-en="3 engines. 1 complete diagnosis.">3 cérebros. 1 diagnóstico completo.</h2>
-        <p class="section-sub" data-pt="A Nexora analisa cada camada do seu produto Amazon em sequência — do mercado à operação — e entrega um diagnóstico executivo com causa raiz e plano de ação." data-en="Nexora analyzes each layer of your Amazon product in sequence — from market to operations — and delivers an executive diagnosis with root cause and action plan.">A Nexora analisa cada camada do seu produto Amazon em sequência — do mercado à operação — e entrega um diagnóstico executivo com causa raiz e plano de ação.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-num">01</div>
-          <div class="step-content">
-            <div class="step-title" data-pt="Cérebro Estrutural" data-en="Structural Engine">Cérebro Estrutural</div>
-            <div class="step-desc" data-pt="Analisa métricas vs. benchmarks reais por categoria. Identifica o pilar crítico: atração, conversão, PPC ou operação." data-en="Analyzes metrics vs. real category benchmarks. Identifies the critical pillar: attraction, conversion, PPC, or operations.">Analisa métricas vs. benchmarks reais por categoria. Identifica o pilar crítico: atração, conversão, PPC ou operação.</div>
+          <div class="hero-copy">
+            <div class="eyebrow">Diagnóstico sistêmico Amazon</div>
+
+            <h1>
+              Seu produto<br>
+              trava.<br>
+              A Nexora<br>
+              encontra<br>
+              o <span class="orange">porquê.</span>
+            </h1>
+
+            <p class="hero-sub">
+              Não analisamos só métricas. Analisamos o ecossistema completo —
+              mercado, página, operação e economia — para identificar a causa raiz real da sua performance.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn btn-primary" onclick="location.href=''./login.html'">
+                → Iniciar diagnóstico
+              </button>
+
+              <a class="btn btn-secondary" href="#como-funciona">
+                Como funciona
+              </a>
+            </div>
+
+            <div class="hero-stats">
+              <div class="stat">
+                <div class="stat-icon">▦</div>
+                <div>
+                  <strong>273+</strong>
+                  <span>subcategorias mapeadas</span>
+                </div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-icon">◉</div>
+                <div>
+                  <strong>3</strong>
+                  <span>cérebros de análise</span>
+                </div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-icon">▰</div>
+                <div>
+                  <strong>5</strong>
+                  <span>sistemas avaliados</span>
+                </div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-icon">▤</div>
+                <div>
+                  <strong>1</strong>
+                  <span>diagnóstico completo</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-scanner" aria-hidden="true">
+            <div class="scanner-orbit">
+              <div class="scanner-sweep"></div>
+              <div class="scanner-horizontal"></div>
+              <div class="scanner-core"></div>
+              <div class="scanner-dot dot-1"></div>
+              <div class="scanner-dot dot-2"></div>
+              <div class="scanner-dot dot-3"></div>
+              <div class="scanner-dot dot-4"></div>
+            </div>
+
+            <div class="scanner-status">
+              <strong>Scanner Nexora ativo</strong>
+              <span>Analisando centenas de sinais em tempo real</span>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section" id="problema">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">O problema</div>
+              <h2>
+                A maioria dos diagnósticos Amazon olham <span class="red">só o sintoma</span>
+              </h2>
+            </div>
+
+            <p class="section-desc">
+              CTR baixo, CVR fraco, ACOS alto. Você vê os números, mas não sabe por que estão assim — nem o que fazer primeiro.
+            </p>
+          </div>
+
+          <div class="grid-4">
+            <div class="card">
+              <div class="card-icon">⌁</div>
+              <h3>Otimização às cegas</h3>
+              <p>Você muda título, imagem e bid sem entender o gargalo real. Custa energia e dinheiro no lugar errado.</p>
+            </div>
+
+            <div class="card">
+              <div class="card-icon">▥</div>
+              <h3>Métrica isolada</h3>
+              <p>Nenhuma ferramenta te diz se o problema é do produto, da página ou do mercado em que você escolheu competir.</p>
+            </div>
+
+            <div class="card">
+              <div class="card-icon">◎</div>
+              <h3>Causa raiz escondida</h3>
+              <p>O sintoma é conversão baixa. A causa pode ser posicionamento errado, barreira de reviews ou preço fora da faixa.</p>
+            </div>
+
+            <div class="card">
+              <div class="card-icon">↗</div>
+              <h3>Escala sem lucro</h3>
+              <p>Produto vendendo bem nem sempre significa crescimento saudável. Sem diagnóstico, crescer faz você perder mais.</p>
+            </div>
           </div>
         </div>
-        <div class="step">
-          <div class="step-num">02</div>
-          <div class="step-content">
-            <div class="step-title" data-pt="Cérebro de Página" data-en="Listing Engine">Cérebro de Página</div>
-            <div class="step-desc" data-pt="Avalia se a sua listing sustenta clique e compra. Analisa thumbnail, título, bullets, A+ e confiança com IA." data-en="Evaluates whether your listing sustains click and purchase. Analyzes thumbnail, title, bullets, A+ content and trust with AI.">Avalia se a sua listing sustenta clique e compra. Analisa thumbnail, título, bullets, A+ e confiança com IA.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">03</div>
-          <div class="step-content">
-            <div class="step-title" data-pt="Cérebro de Mercado" data-en="Market Engine">Cérebro de Mercado</div>
-            <div class="step-desc" data-pt="Mapeia concorrentes e detecta se o problema é da página ou do encaixe competitivo. Posiciona no quadrante correto." data-en="Maps competitors and detects whether the problem is with the listing or competitive fit. Positions in the correct quadrant.">Mapeia concorrentes e detecta se o problema é da página ou do encaixe competitivo. Posiciona no quadrante correto.</div>
-          </div>
-        </div>
-        <div class="step">
-          <div class="step-num">04</div>
-          <div class="step-content">
-            <div class="step-title" data-pt="Síntese Estratégica" data-en="Strategic Synthesis">Síntese Estratégica</div>
-            <div class="step-desc" data-pt="Cruza tudo e gera um score geral, diagnóstico executivo completo e plano de ação priorizado." data-en="Crosses everything and generates an overall score, complete executive diagnosis, and prioritized action plan.">Cruza tudo e gera um score geral, diagnóstico executivo completo e plano de ação priorizado.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+      </section>
 
-<section class="section">
-  <div class="wrap">
-    <div style="text-align:center;max-width:560px;margin:0 auto 0">
-      <span class="section-tag" data-pt="Para quem é" data-en="Who it's for">Para quem é</span>
-      <h2 data-pt="Para quem quer crescer com inteligência na Amazon" data-en="For those who want to grow intelligently on Amazon">Para quem quer crescer com inteligência na Amazon</h2>
-    </div>
-    <div class="audience-grid">
-      <div class="audience-card">
-        <div class="audience-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="3" stroke="#4a90d9" stroke-width="1.2"/><path d="M6 9h6M9 6v6" stroke="#4a90d9" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="audience-title" data-pt="Donos de marca (Private Label)" data-en="Brand owners (Private Label)">Donos de marca (Private Label)</div>
-        <div class="audience-desc" data-pt="Produto bom mas performance travada. A Nexora encontra o gargalo e aponta o caminho para escalar." data-en="Good product but stalled performance. Nexora finds the bottleneck and points the way to scale.">Produto bom mas performance travada. A Nexora encontra o gargalo e aponta o caminho para escalar.</div>
-      </div>
-      <div class="audience-card">
-        <div class="audience-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="6" r="3" stroke="#4a90d9" stroke-width="1.2"/><path d="M3 15c0-3 2.7-5 6-5s6 2 6 5" stroke="#4a90d9" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </div>
-        <div class="audience-title" data-pt="Gestores de e-commerce" data-en="E-commerce managers">Gestores de e-commerce</div>
-        <div class="audience-desc" data-pt="Múltiplos produtos para gerenciar. A Nexora prioriza onde agir primeiro com base em impacto real." data-en="Multiple products to manage. Nexora prioritizes where to act first based on real impact.">Múltiplos produtos para gerenciar. A Nexora prioriza onde agir primeiro com base em impacto real.</div>
-      </div>
-      <div class="audience-card">
-        <div class="audience-icon">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 14l4-4 3 3 5-7" stroke="#4a90d9" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div class="audience-title" data-pt="Agências e consultores" data-en="Agencies and consultants">Agências e consultores</div>
-        <div class="audience-desc" data-pt="Diagnóstico sistêmico para entregar mais valor aos clientes com análise profunda e estruturada." data-en="Systemic diagnosis to deliver more value to clients with deep, structured analysis.">Diagnóstico sistêmico para entregar mais valor aos clientes com análise profunda e estruturada.</div>
-      </div>
-    </div>
-  </div>
-</section>
+      <section class="section how-section" id="como-funciona">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Como funciona</div>
+              <h2>
+                3 cérebros. <span class="red">1 diagnóstico completo.</span>
+              </h2>
+            </div>
 
-<section class="section" id="contato">
-  <div class="wrap">
-    <div class="cta-section">
-      <span class="section-tag" data-pt="Próximo passo" data-en="Next step">Próximo passo</span>
-      <h2 data-pt="Pronto para descobrir o real problema do seu produto?" data-en="Ready to discover the real problem with your product?">Pronto para descobrir o real problema do seu produto?</h2>
-      <p class="section-sub" data-pt="Entre em contato agora e entenda o que está travando a sua performance na Amazon." data-en="Get in touch now and understand what is stalling your Amazon performance.">Entre em contato agora e entenda o que está travando a sua performance na Amazon.</p>
-
-      <a href="https://wa.me/5511971545949?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Nexora%20Intelligence." target="_blank" class="wa-btn" style="margin-bottom:32px">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.126.558 4.121 1.533 5.851L0 24l6.304-1.51A11.935 11.935 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.368l-.36-.214-3.737.895.944-3.627-.235-.374A9.818 9.818 0 1112 21.818z"/></svg>
-        <span data-pt="Falar no WhatsApp" data-en="Chat on WhatsApp">Falar no WhatsApp</span>
-      </a>
-
-      <div class="cta-divider" data-pt="ou preencha o formulário abaixo" data-en="or fill out the form below">ou preencha o formulário abaixo</div>
-
-      <div class="form-wrap" id="form-wrap">
-        <p class="form-title" data-pt="Solicite mais informações" data-en="Request more information">Solicite mais informações</p>
-        <p class="form-sub" data-pt="Entraremos em contato em até 24 horas." data-en="We will contact you within 24 hours.">Entraremos em contato em até 24 horas.</p>
-        <form id="lead-form" onsubmit="submitForm(event)">
-          <div class="form-group">
-            <label data-pt="Nome completo" data-en="Full name">Nome completo</label>
-            <input type="text" id="f-name" required placeholder="Seu nome">
+            <p class="section-desc">
+              A Nexora analisa cada camada do seu produto em sequência e entrega um diagnóstico executivo com causa raiz e plano de ação.
+            </p>
           </div>
-          <div class="form-group">
-            <label>E-mail</label>
-            <input type="email" id="f-email" required placeholder="seu@email.com">
-          </div>
-          <div class="form-group">
-            <label>WhatsApp</label>
-            <input type="tel" id="f-phone" placeholder="(11) 99999-9999">
-          </div>
-          <div class="form-group">
-            <label data-pt="Perfil" data-en="Profile">Perfil</label>
-            <select id="f-profile">
-              <option value="" data-pt="Selecione..." data-en="Select...">Selecione...</option>
-              <option value="pl" data-pt="Dono de marca / Private Label" data-en="Brand owner / Private Label">Dono de marca / Private Label</option>
-              <option value="gestor" data-pt="Gestor de e-commerce" data-en="E-commerce manager">Gestor de e-commerce</option>
-              <option value="agencia" data-pt="Agência / Consultor" data-en="Agency / Consultant">Agência / Consultor</option>
-              <option value="outro" data-pt="Outro" data-en="Other">Outro</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-form" data-pt="Enviar solicitação" data-en="Send request">Enviar solicitação</button>
-          <p class="form-privacy" data-pt="Seus dados são usados apenas para contato. Sem spam." data-en="Your data is used only for contact. No spam.">Seus dados são usados apenas para contato. Sem spam.</p>
-        </form>
-        <div class="form-success" id="form-success">
-          <div class="form-success-icon">✓</div>
-          <div class="form-success-title" data-pt="Solicitação recebida!" data-en="Request received!">Solicitação recebida!</div>
-          <div class="form-success-sub" data-pt="Entraremos em contato em breve pelo WhatsApp ou e-mail." data-en="We will contact you shortly via WhatsApp or email.">Entraremos em contato em breve pelo WhatsApp ou e-mail.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<footer>
-  <div class="wrap">
-    <div class="footer-inner">
-      <img src="logo-horizontal.png" alt="Nexora Intelligence" class="footer-logo">
-      <div class="footer-links">
-        <a href="mailto:nexoraintelli@gmail.com">nexoraintelli@gmail.com</a>
-        <a href="https://wa.me/5511971545949?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20a%20Nexora%20Intelligence." target="_blank">WhatsApp</a>
-      </div>
-      <span class="footer-copy">© 2025 Nexora Intelligence</span>
-    </div>
+          <div class="grid-4">
+            <div class="card brain-card">
+              <div>
+                <div class="brain-number">01</div>
+                <div class="brain-symbol">▧</div>
+                <h3>Cérebro 1<br>Estrutural</h3>
+              </div>
+              <p>Analisa métricas e benchmarks reais por categoria. Identifica o pilar crítico: atração, conversão, PPC ou operação.</p>
+            </div>
+
+            <div class="card brain-card">
+              <div>
+                <div class="brain-number">02</div>
+                <div class="brain-symbol">▤</div>
+                <h3>Cérebro 2<br>Página</h3>
+              </div>
+              <p>Avalia se a listing sustenta clique e compra. Analisa thumbnail, título, bullets, A+ e confiança.</p>
+            </div>
+
+            <div class="card brain-card">
+              <div>
+                <div class="brain-number">03</div>
+                <div class="brain-symbol">◔</div>
+                <h3>Cérebro 3<br>Mercado</h3>
+              </div>
+              <p>Mede concorrentes e detecta se o problema é pricing, nível de concorrência, reviews ou posicionamento.</p>
+            </div>
+
+            <div class="card brain-card featured">
+              <div>
+                <div class="brain-number">04</div>
+                <div class="brain-symbol">✧</div>
+                <h3>Síntese<br>Estratégica</h3>
+              </div>
+              <p>Cruza tudo e gera score geral, diagnóstico executivo completo e plano de ação priorizado.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section audience" id="para-quem">
+        <div class="container">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Para quem é</div>
+              <h2>
+                Para quem quer crescer com <span class="red">inteligência</span> na Amazon
+              </h2>
+            </div>
+          </div>
+
+          <div class="grid-3">
+            <div class="card">
+              <div class="card-icon">◇</div>
+              <h3>Donos de marca / Private Label</h3>
+              <p>Produto bom, mas performance travada. A Nexora encontra o gargalo e aponta o caminho para escalar.</p>
+            </div>
+
+            <div class="card">
+              <div class="card-icon">▱</div>
+              <h3>Gestores de e-commerce</h3>
+              <p>Múltiplos produtos para gerenciar. A Nexora prioriza onde agir primeiro com base em impacto real.</p>
+            </div>
+
+            <div class="card">
+              <div class="card-icon">◌</div>
+              <h3>Agências e consultores</h3>
+              <p>Diagnóstico sistêmico para entregar mais valor aos clientes com análise profunda e estruturada.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="container">
+          <div class="cta-box">
+            <div class="cta-inner">
+              <div>
+                <div class="section-kicker">Próximo passo</div>
+                <h2>
+                  Pronto para descobrir<br>
+                  o <span class="red">real problema?</span>
+                </h2>
+                <p>
+                  Entre agora e faça o diagnóstico completo do seu produto Amazon.
+                </p>
+              </div>
+
+              <button class="btn btn-primary" onclick="location.href=''./login.html'">
+                → Iniciar diagnóstico agora
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+   <footer class="footer">
+  <div class="container footer-inner">
+    <a href="./index.html" class="brand footer-brand">
+      <img src="../logo-horizontal.png%20(2).png" alt="Nexora Intelligence" class="brand-image footer-logo">
+    </a>
+
+    <div>Diagnóstico sistêmico Amazon com inteligência real.</div>
+    <div>© 2026 Nexora Intelligence</div>
   </div>
 </footer>
 
-<script>
-let lang = 'pt';
-
-function setLang(l) {
-  lang = l;
-  document.getElementById('btn-pt').classList.toggle('active', l === 'pt');
-  document.getElementById('btn-en').classList.toggle('active', l === 'en');
-  document.querySelectorAll('[data-pt]').forEach(el => {
-    const val = el.getAttribute('data-' + l);
-    if (!val) return;
-    if (el.tagName === 'INPUT' || el.tagName === 'OPTION') el.placeholder = val;
-    else el.innerHTML = val;
-  });
-}
-
-function submitForm(e) {
-  e.preventDefault();
-  const name = document.getElementById('f-name').value;
-  const email = document.getElementById('f-email').value;
-  const phone = document.getElementById('f-phone').value;
-  const profile = document.getElementById('f-profile').value;
-
-  const msg = `Olá! Me chamo ${name}. Tenho interesse na Nexora Intelligence.${phone ? ' Meu WhatsApp: ' + phone + '.' : ''} E-mail: ${email}. Perfil: ${profile}.`;
-  const waUrl = `https://wa.me/5511971545949?text=${encodeURIComponent(msg)}`;
-
-  document.getElementById('lead-form').style.display = 'none';
-  document.getElementById('form-success').style.display = 'block';
-
-  setTimeout(() => { window.open(waUrl, '_blank'); }, 800);
-}
-
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const el = document.querySelector(a.getAttribute('href'));
-    if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
-  });
-});
-</script>
+  </div>
 </body>
 </html>
